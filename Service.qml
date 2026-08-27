@@ -27,6 +27,9 @@ Item {
   property bool refreshing: false
   property string lastError: ""
   property string actionStatus: ""
+  property string cpuCores: "—"
+  property string ramSize: "—"
+  property string diskSize: "—"
 
   // Optimistic desired state so the icon/button react the instant you click,
   // rather than waiting out the ~8s poll interval. -1 means "just follow the
@@ -52,6 +55,7 @@ Item {
   function refresh() {
     if (!statusProcess.running) statusProcess.running = true
     if (!windowsDirProcess.running) windowsDirProcess.running = true
+    if (!configProcess.running) configProcess.running = true
   }
 
   function add() {
@@ -171,6 +175,47 @@ Item {
     running: false
     command: ["test", "-d", root.windowsDir]
     onExited: function(exitCode) { root.windowsDirExists = exitCode === 0 }
+  }
+
+  Process {
+    id: configProcess
+    running: false
+    command: ["grep", "-E", "RAM_SIZE|CPU_CORES|DISK_SIZE", "/var/lib/omarchy/windows/docker-compose.yml"]
+    stdout: StdioCollector { id: configStdout; waitForEnd: true }
+    onExited: function(exitCode) {
+      if (exitCode === 0) {
+        var text = String(configStdout.text || "")
+        var lines = text.trim().split('\n')
+        root.cpuCores = "—"
+        root.ramSize = "—"
+        root.diskSize = "—"
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i]
+          if (line.indexOf("CPU_CORES") !== -1) {
+            var match = line.match(/"(\d+)"/)
+            if (match) root.cpuCores = match[1]
+          } else if (line.indexOf("RAM_SIZE") !== -1) {
+            var match = line.match(/"([^"]+)"/)
+            if (match) {
+              var val = match[1]
+              // Extract number and format as "# GB"
+              var numMatch = val.match(/^(\d+)/)
+              if (numMatch) root.ramSize = numMatch[1] + " GB"
+              else root.ramSize = val
+            }
+          } else if (line.indexOf("DISK_SIZE") !== -1) {
+            var match = line.match(/"([^"]+)"/)
+            if (match) {
+              var val = match[1]
+              // Extract number and format as "# GB"
+              var numMatch = val.match(/^(\d+)/)
+              if (numMatch) root.diskSize = numMatch[1] + " GB"
+              else root.diskSize = val
+            }
+          }
+        }
+      }
+    }
   }
 
   Process {

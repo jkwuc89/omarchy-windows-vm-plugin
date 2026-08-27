@@ -16,7 +16,7 @@ Panel {
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
   readonly property string stateLabel: Model.stateLabel(winvm.vmState)
   readonly property string detailText: winvm.actionStatus !== "" ? winvm.actionStatus
-    : (winvm.lastError !== "" ? winvm.lastError : winvm.containerConfig)
+    : (winvm.lastError !== "" ? winvm.lastError : "")
   readonly property color iconColor: winvm.active ? foreground : dim
   readonly property color barIconColor: winvm.active ? barForeground : Qt.darker(barForeground, 1.55)
 
@@ -106,6 +106,63 @@ Panel {
               fontFamily: root.fontFamily
               enabled: !winvm.busy && (winvm.active ? !winvm.stopDisabled : !winvm.startDisabled)
               onClicked: winvm.toggleRunning()
+            }
+          }
+        }
+
+        Column {
+          visible: winvm.windowsDirExists
+          width: parent.width
+          spacing: Style.space(2)
+
+          Row {
+            width: parent.width
+            Text {
+              text: "CPU Cores"
+              color: root.dim
+              font.family: "monospace"
+              font.pixelSize: Style.font.bodySmall
+              width: Style.space(100)
+            }
+            Text {
+              text: winvm.cpuCores
+              color: root.foreground
+              font.family: "monospace"
+              font.pixelSize: Style.font.bodySmall
+            }
+          }
+
+          Row {
+            width: parent.width
+            Text {
+              text: "Memory"
+              color: root.dim
+              font.family: "monospace"
+              font.pixelSize: Style.font.bodySmall
+              width: Style.space(100)
+            }
+            Text {
+              text: winvm.ramSize
+              color: root.foreground
+              font.family: "monospace"
+              font.pixelSize: Style.font.bodySmall
+            }
+          }
+
+          Row {
+            width: parent.width
+            Text {
+              text: "Disk Size"
+              color: root.dim
+              font.family: "monospace"
+              font.pixelSize: Style.font.bodySmall
+              width: Style.space(100)
+            }
+            Text {
+              text: winvm.diskSize
+              color: root.foreground
+              font.family: "monospace"
+              font.pixelSize: Style.font.bodySmall
             }
           }
         }
