@@ -15,8 +15,7 @@ Panel {
   readonly property color dim: Qt.darker(foreground, 1.55)
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
   readonly property string stateLabel: Model.stateLabel(winvm.vmState)
-  readonly property string detailText: winvm.actionStatus !== "" ? winvm.actionStatus
-    : (winvm.lastError !== "" ? winvm.lastError : "")
+  readonly property string detailText: winvm.lastError !== "" ? winvm.lastError : ""
   readonly property color iconColor: winvm.active ? foreground : dim
   readonly property color barIconColor: winvm.active ? barForeground : Qt.darker(barForeground, 1.55)
 
