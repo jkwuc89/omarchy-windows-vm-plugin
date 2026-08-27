@@ -16,7 +16,7 @@ Panel {
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
   readonly property string stateLabel: Model.stateLabel(winvm.vmState)
   readonly property string detailText: winvm.actionStatus !== "" ? winvm.actionStatus
-    : (winvm.lastError !== "" ? winvm.lastError : Model.detailText(winvm.vmState))
+    : (winvm.lastError !== "" ? winvm.lastError : winvm.containerConfig)
   readonly property color iconColor: winvm.active ? foreground : dim
   readonly property color barIconColor: winvm.active ? barForeground : Qt.darker(barForeground, 1.55)
 
@@ -108,16 +108,6 @@ Panel {
               onClicked: winvm.toggleRunning()
             }
           }
-        }
-
-        Text {
-          visible: root.detailText !== ""
-          width: parent.width
-          text: root.detailText
-          color: winvm.lastError !== "" ? root.urgent : root.dim
-          font.family: root.fontFamily
-          font.pixelSize: Style.font.bodySmall
-          wrapMode: Text.WordWrap
         }
 
       }

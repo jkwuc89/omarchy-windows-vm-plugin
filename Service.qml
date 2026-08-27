@@ -42,7 +42,7 @@ Item {
     return Model.classifyState(containerStatus, windowsDirExists)
   }
 
-  readonly property bool busy: statusProcess.running || windowsDirProcess.running || startProcess.running || stopProcess.running || removeProcess.running
+  readonly property bool busy: statusProcess.running || windowsDirProcess.running || stopProcess.running || removeProcess.running
   // Only the "starting" transient blocks Start — the launch command itself
   // (below) can legitimately keep running for an entire RDP session, and
   // must not permanently disable the button once the VM is actually up.
@@ -65,10 +65,8 @@ Item {
     if (startDisabled) return
     _desired = 1
     actionStatus = "Starting Windows VM…"
-    startProcess.command = ["omarchy-windows-vm", "start"]
-    startProcess.running = true
-    // Launch RDP immediately; the omarchy-windows-vm command will open it once ready
-    Quickshell.execDetached([root.scriptDir + "/launch-rdp.sh"])
+    // Launch start command in background without waiting for it to exit
+    Quickshell.execDetached(["omarchy-windows-vm", "start"])
     settleTimer.restart()
   }
 
@@ -179,6 +177,7 @@ Item {
     id: startProcess
     running: false
     command: []
+    stdout: StdioCollector { id: startStdout; waitForEnd: true }
     stderr: StdioCollector { id: startStderr; waitForEnd: true }
     onExited: function(exitCode) {
       if (exitCode !== 0) {
