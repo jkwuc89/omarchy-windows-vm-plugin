@@ -20,7 +20,6 @@ Item {
   readonly property string container: "omarchy-windows"
   readonly property string composeFile: "/var/lib/omarchy/windows/docker-compose.yml"
   readonly property string windowsDir: "/var/lib/omarchy/windows"
-  readonly property string scriptDir: "/home/kwedinger/.config/omarchy/plugins/jkwuc89.windows-vm"
 
   property string containerStatus: ""
   property bool windowsDirExists: false
