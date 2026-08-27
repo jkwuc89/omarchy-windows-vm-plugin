@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "jkwuc89.windows-vm",
+  "name": "Windows VM",
+  "version": "1.0.0",
+  "author": "jkwuc89",
+  "description": "Status, start, and stop for the Docker-based Windows VM",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Windows VM",
+    "description": "Status, start, and stop for the Docker-based Windows VM",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
