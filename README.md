@@ -12,6 +12,14 @@ a read-only `docker inspect` for status, and the already-hardened, packaged
 for actions. All privilege handling (sudoless Docker vs. `pkexec`) stays in
 that command.
 
+## Screenshots
+
+**Stopped state** — icon dimmed, Start button visible:
+![Screenshot: Windows VM widget in stopped state](screenshot-stopped.png)
+
+**Running state** — icon bright, Stop button visible, VM configuration shown:
+![Screenshot: Windows VM widget in running state](screenshot-running.png)
+
 ## Install
 
 ```bash
