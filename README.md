@@ -26,6 +26,16 @@ After pulling or editing this repo's files and committing:
 omarchy plugin update jkwuc89.windows-vm
 ```
 
+## Dependencies
+
+- **Docker** — running container daemon
+- **omarchy-windows-vm** — packaged VM management command
+- **Wayland/uwsm** — for RDP session context
+
+## License
+
+This plugin is licensed under the MIT License. See `LICENSE` file for details.
+
 ## Files
 
 - `manifest.json` — plugin declaration (id `jkwuc89.windows-vm`).
