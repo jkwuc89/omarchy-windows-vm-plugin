@@ -34,7 +34,7 @@ Item {
   // rather than waiting out the ~8s poll interval. -1 means "just follow the
   // real state"; 1/0 mean "starting"/"stopping" until docker inspect agrees.
   property int _desired: -1
-  property bool _windowsDirWasNotConfigured: true
+  property bool _baselineStateEstablished: false
   readonly property bool running: containerStatus === "running"
   readonly property bool active: _desired === -1 ? running : (_desired === 1)
 
@@ -44,7 +44,7 @@ Item {
     return Model.classifyState(containerStatus, windowsDirExists)
   }
 
-  readonly property bool busy: statusProcess.running || windowsDirProcess.running || stopProcess.running || removeProcess.running
+  readonly property bool busy: statusProcess.running || windowsDirProcess.running || stopProcess.running
   // Only the "starting" transient blocks Start — the launch command itself
   // (below) can legitimately keep running for an entire RDP session, and
   // must not permanently disable the button once the VM is actually up.
@@ -82,13 +82,6 @@ Item {
     settleTimer.restart()
   }
 
-  function remove() {
-    if (busy) return
-    actionStatus = "Removing Windows VM…"
-    removeProcess.command = ["omarchy-windows-vm", "remove", "--yes"]
-    removeProcess.running = true
-  }
-
   function primaryAction() {
     if (vmState === "not-configured") add()
     else if (active) stop()
@@ -103,11 +96,15 @@ Item {
     target: root
     function onWindowsDirExistsChanged() {
       // When the install wizard completes, /var/lib/omarchy/windows is created.
-      // Detect this transition and automatically start the VM + open RDP.
-      if (!root._windowsDirWasNotConfigured) return
+      // Detect this transition and automatically start the VM.
+      // On first state detection, just establish the baseline—don't auto-start.
+      // Only auto-start on actual false→true transitions after that.
+      if (!root._baselineStateEstablished) {
+        root._baselineStateEstablished = true
+        return
+      }
       if (!root.windowsDirExists) return
       // Windows directory was just created — install completed!
-      root._windowsDirWasNotConfigured = false
       Qt.callLater(function() { root.start() })
     }
   }
@@ -248,20 +245,4 @@ Item {
     }
   }
 
-  Process {
-    id: removeProcess
-    running: false
-    command: []
-    stderr: StdioCollector { id: removeStderr; waitForEnd: true }
-    onExited: function(exitCode) {
-      if (exitCode === 0) {
-        root.actionStatus = ""
-        root.lastError = ""
-      } else {
-        root.lastError = "Failed to remove the Windows VM"
-        root.actionStatus = root.lastError
-      }
-      root.refresh()
-    }
-  }
 }

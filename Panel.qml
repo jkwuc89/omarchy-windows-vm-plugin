@@ -38,7 +38,6 @@ Panel {
     function add(): string { winvm.add(); return "ok" }
     function start(): string { winvm.start(); return "ok" }
     function stop(): string { winvm.stop(); return "ok" }
-    function remove(): string { winvm.remove(); return "ok" }
     function status(): string { return root.stateLabel }
   }
 
