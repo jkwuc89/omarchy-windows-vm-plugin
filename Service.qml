@@ -85,7 +85,7 @@ Item {
   function remove() {
     if (busy) return
     actionStatus = "Removing Windows VM…"
-    removeProcess.command = ["sudo", "omarchy-windows-vm", "remove", "--yes"]
+    removeProcess.command = ["omarchy-windows-vm", "remove", "--yes"]
     removeProcess.running = true
   }
 
